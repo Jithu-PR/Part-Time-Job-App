@@ -252,7 +252,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         const restaurantResponse = await fetch(
-          `import.meta.env.VITE_API_URL/api/restaurants/${userData.restaurant.documentId}?populate[jobs][populate][slots][populate][0]=booked_by`,
+          `${import.meta.env.VITE_API_URL}/api/restaurants/${userData.restaurant.documentId}?populate[jobs][populate][slots][populate][0]=booked_by`,
           {
             method: 'GET',
             headers: {
@@ -402,7 +402,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
 
       const response = await fetch(
-        `import.meta.env.VITE_API_URL / api / restaurants / ${ userData.restaurant.documentId }`,
+        `${import.meta.env.VITE_API_URL}/api/restaurants/${ userData.restaurant.documentId }`,
         {
           method: 'PUT',
           headers: {
@@ -541,7 +541,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
 
       const response = await fetch(
-        `import.meta.env.VITE_API_URL/api/restaurants/${userData.restaurant.documentId}`,
+        `${import.meta.env.VITE_API_URL}/api/restaurants/${userData.restaurant.documentId}`,
         {
           method: 'PUT',
           headers: {
