@@ -60,9 +60,9 @@ const CompanyDashboard: React.FC = () => {
   if (loading || !data) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          <p className="text-slate-500 font-medium tracking-wide">Loading Dashboard...</p>
+        <div className="fm-loader">
+          <div className="logo">Free<span>Mason</span></div>
+          <div className="fm-loader-sub">Loading Dashboard…</div>
         </div>
       </div>
     );
@@ -77,35 +77,42 @@ const CompanyDashboard: React.FC = () => {
     <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full relative">
       {/* Full Screen Loading Overlay */}
       {saveLoading && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm cursor-wait">
-          <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-xl flex flex-col items-center gap-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-            <p className="text-slate-800 font-bold tracking-wide text-sm sm:text-base">Saving Changes...</p>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--black)]/80 backdrop-blur-sm cursor-wait">
+          <div className="bg-[var(--slate)] border border-[rgba(232,200,74,0.2)] p-6 sm:p-8 rounded-lg shadow-xl flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-4 border-[var(--mid)] border-t-[var(--gold)] rounded-full animate-spin"></div>
+            <p className="text-[var(--white)] font-mono uppercase tracking-wider text-xs font-bold">Saving Changes...</p>
           </div>
         </div>
       )}
+      
       {/* Header Section */}
-      <div className="bg-slate-900 text-white rounded-2xl sm:rounded-3xl p-6 sm:p-12 shadow-sm relative overflow-hidden">
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+      <div className="bg-[var(--slate)] border border-[rgba(232,200,74,0.2)] rounded-lg p-6 sm:p-10 shadow-lg relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid opacity-10 pointer-events-none" style={{
+          backgroundImage: 'linear-gradient(rgba(232,200,74,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(232,200,74,0.04) 1px, transparent 1px)',
+          backgroundSize: '30px 30px'
+        }}></div>
+
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-4xl font-bold tracking-tight mb-2 sm:mb-3">
+            <div className="logo text-3xl mb-1">
+              Free<span>Mason</span>
+            </div>
+            <p className="text-[var(--muted)] font-mono text-xs uppercase tracking-wider">
               {isRestaurantOwner ? 'Restaurant Management Dashboard' : 'Company Dashboard'}
-            </h1>
-            <p className="text-slate-400 text-sm sm:text-lg">
-              {isRestaurantOwner ? 'Manage your restaurant shifts and availability' : 'View available positions'}
             </p>
           </div>
           <button 
             onClick={handleLogout}
-            className="self-start px-4 py-2 sm:px-5 sm:py-2.5 bg-slate-800 hover:bg-rose-600 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl transition-colors border border-slate-700 hover:border-rose-500 shadow-sm"
+            className="self-start btn-outline py-2 px-5 font-semibold text-xs tracking-wider"
           >
             Logout
           </button>
         </div>
+
         {/* global date selector for owners */}
         {isRestaurantOwner && (
           <div className="mt-6 sm:mt-8 relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-            <label htmlFor="view-date" className="text-xs sm:text-sm font-medium text-slate-300">
+            <label htmlFor="view-date" className="text-xs font-mono uppercase tracking-wider text-[var(--muted)]">
               View date:
             </label>
             <input
@@ -113,7 +120,7 @@ const CompanyDashboard: React.FC = () => {
               type="date"
               value={viewDate}
               onChange={(e) => setViewDate(e.target.value)}
-              className="border border-slate-700 bg-slate-800 text-white rounded-lg sm:rounded-xl px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all"
+              className="border border-[rgba(232,200,74,0.15)] bg-[var(--black)] text-[var(--white)] rounded px-3 py-1.5 text-xs font-mono uppercase tracking-wider focus:border-[var(--gold)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)] transition-all"
             />
           </div>
         )}
@@ -121,8 +128,12 @@ const CompanyDashboard: React.FC = () => {
 
       {/* Save status message */}
       {saveMessage && (
-        <div className={`p-4 rounded-lg border ${saveMessage.type === 'success' ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
-          {saveMessage.text}
+        <div className={`p-4 rounded border text-xs font-mono uppercase tracking-wider ${
+          saveMessage.type === 'success' 
+            ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-200' 
+            : 'bg-rose-950/40 border-rose-500/40 text-rose-200'
+        }`}>
+          {saveMessage.type === 'success' ? '✓' : '⚠️'} {saveMessage.text}
         </div>
       )}
 
@@ -130,18 +141,20 @@ const CompanyDashboard: React.FC = () => {
       {companies.map((company) => (
         <div key={company.id} className="space-y-8">
           {/* Company Header */}
-          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
-            <h2 className="text-lg sm:text-2xl font-bold text-slate-800 mb-4 sm:mb-6 tracking-tight">{company.name || `Company ${company.id}`}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 text-xs sm:text-sm">
-              <div className="bg-slate-50 p-3 sm:p-5 rounded-lg sm:rounded-2xl border border-slate-100 flex flex-col justify-center">
-                <p className="text-[10px] sm:text-xs text-slate-500 font-medium mb-0.5 sm:mb-1">Operating Hours</p>
-                <p className="text-sm sm:text-xl font-bold text-slate-800">
+          <div className="bg-[var(--slate)] border border-[rgba(232,200,74,0.15)] rounded-lg p-6 sm:p-8 shadow-sm">
+            <h2 className="font-['Bebas Neue'] text-3xl uppercase tracking-wider text-[var(--gold)] mb-4">
+              {company.name || `Company ${company.id}`}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="bg-[var(--black)] p-4 rounded border border-[rgba(232,200,74,0.1)] flex flex-col justify-center">
+                <p className="text-[10px] font-mono text-[var(--muted)] uppercase tracking-wider mb-1">Operating Hours</p>
+                <p className="text-base font-bold text-[var(--white)]">
                   {company.startHour}:00 - {company.endHour}:00
                 </p>
               </div>
-              <div className="bg-indigo-50 p-3 sm:p-5 rounded-lg sm:rounded-2xl border border-indigo-100 flex flex-col justify-center">
-                <p className="text-[10px] sm:text-xs text-indigo-600 font-medium mb-0.5 sm:mb-1">Total Positions</p>
-                <p className="text-sm sm:text-xl font-bold text-indigo-900">
+              <div className="bg-[var(--black)] p-4 rounded border border-[rgba(242,98,46,0.15)] flex flex-col justify-center">
+                <p className="text-[10px] font-mono text-[var(--orange)] uppercase tracking-wider mb-1">Total Positions</p>
+                <p className="text-base font-bold text-[var(--white)]">
                   {Object.keys(company.roles).length}
                 </p>
               </div>
@@ -154,14 +167,14 @@ const CompanyDashboard: React.FC = () => {
               const roleData = company.roles[roleName];
               
               return (
-                <div key={roleName} className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] flex flex-col">
+                <div key={roleName} className="bg-[var(--slate)] border border-[rgba(232,200,74,0.15)] rounded-lg p-6 sm:p-8 shadow-sm flex flex-col">
                   {/* Role Header */}
-                  <div className="mb-4 sm:mb-6 border-b border-slate-100 pb-4 sm:pb-6">
-                    <h3 className="text-base sm:text-xl font-bold text-slate-800 tracking-tight">{roleName}</h3>
-                    <p className="text-xs sm:text-sm text-slate-500 mt-1">{roleData.desc || 'No description'}</p>
-                    <div className="flex items-baseline gap-1.5 sm:gap-2 mt-3 sm:mt-4">
-                      <span className="text-2xl sm:text-3xl font-bold text-slate-800">${roleData.salary}</span>
-                      <span className="text-xs sm:text-sm text-slate-500 font-medium">/hour</span>
+                  <div className="mb-6 border-b border-[rgba(255,255,255,0.06)] pb-6">
+                    <h3 className="font-['Bebas Neue'] text-2xl uppercase tracking-wider text-[var(--gold)]">{roleName}</h3>
+                    <p className="text-xs text-[var(--white)] opacity-60 mt-1.5 font-sans leading-relaxed">{roleData.desc || 'No description'}</p>
+                    <div className="flex items-baseline gap-1.5 mt-4">
+                      <span className="text-2xl font-mono font-bold text-[var(--white)]">${roleData.salary}</span>
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--muted)]">/ hour</span>
                     </div>
                   </div>
 
@@ -186,19 +199,19 @@ const CompanyDashboard: React.FC = () => {
 
                   {/* Save Button - Only for Restaurant Owners */}
                   {isRestaurantOwner && (
-                    <div className="pt-4 sm:pt-6 mt-auto">
+                    <div className="pt-4 mt-auto border-t border-[rgba(255,255,255,0.06)]">
                       <button
                         onClick={() => handleSaveRoleSlots(roleName)}
                         disabled={saveLoading === roleName || loading}
-                        className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 sm:py-4 px-4 rounded-xl sm:rounded-2xl text-xs sm:text-base border-transparent transition-colors shadow-md active:scale-[0.98] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed flex items-center justify-center"
+                        className="w-full btn-primary py-3.5 rounded text-xs uppercase tracking-wider font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                       >
                         {saveLoading === roleName ? (
                           <>
-                            <span className="inline-block animate-spin mr-3 border-2 border-slate-400 border-t-white rounded-full w-5 h-5"></span>
-                            Saving...
+                            <span className="inline-block animate-spin mr-3 border-2 border-[var(--black)] border-t-[var(--white)] rounded-full w-4 h-4"></span>
+                            Saving shifts...
                           </>
                         ) : (
-                          `Save Changes`
+                          `Save Shift Configuration`
                         )}
                       </button>
                     </div>
@@ -209,8 +222,8 @@ const CompanyDashboard: React.FC = () => {
           </div>
 
           {Object.keys(company.roles).length === 0 && (
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
-              <p className="text-gray-500">No positions available for this restaurant</p>
+            <div className="bg-[var(--slate)] border border-[rgba(232,200,74,0.1)] rounded p-8 text-center">
+              <p className="text-xs font-mono uppercase tracking-wider text-[var(--muted)]">No positions available for this restaurant</p>
             </div>
           )}
         </div>

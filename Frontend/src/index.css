@@ -1,16 +1,700 @@
 @import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Minimal base overrides */
 :root {
-  --font-sans: "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --black: #0a0a0a;
+  --white: #f5f0e8;
+  --gold: #e8c84a;
+  --orange: #f2622e;
+  --slate: #1c1c1c;
+  --mid: #2e2e2e;
+  --muted: #888;
+  --radius: 4px;
+}
+
+/* ── LOADING ANIMATION ── */
+@keyframes fm-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.08; }
+}
+
+.fm-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  animation: fm-blink 2s ease-in-out infinite;
+}
+
+.fm-loader .logo {
+  font-size: 2.8rem;
+  letter-spacing: 0.04em;
+}
+
+.fm-loader-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: 'DM Sans', sans-serif;
+  background: var(--black) !important;
+  color: var(--white) !important;
+  overflow-x: hidden;
   min-height: 100vh;
-  @apply bg-slate-50 text-slate-900 antialiased selection:bg-indigo-100 selection:text-indigo-900;
+}
+
+/* Base style overrides for form elements */
+input, select, textarea {
+  background-color: var(--slate) !important;
+  color: var(--white) !important;
+  border: 1px solid rgba(232, 200, 74, 0.2) !important;
+  border-radius: var(--radius) !important;
+  transition: all 0.2s !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 2px rgba(232, 200, 74, 0.2) !important;
+  outline: none !important;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem 2.5rem;
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(232,200,74,0.15);
+}
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  text-decoration: none;
+}
+.logo span { color: var(--orange); }
+nav ul { list-style: none; display: flex; gap: 2rem; align-items: center; }
+nav ul a {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+nav ul a:hover { color: var(--gold); }
+.nav-cta {
+  background: var(--gold);
+  color: var(--black) !important;
+  padding: 0.5rem 1.2rem;
+  border-radius: var(--radius);
+  font-weight: 700 !important;
+  transition: background 0.2s !important;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+}
+.nav-cta:hover { background: var(--orange) !important; color: var(--white) !important; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 8rem 2.5rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 70% 50%, rgba(232,200,74,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(242,98,46,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(232,200,74,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,200,74,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.hero-left { position: relative; z-index: 2; }
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--orange);
+  border: 1px solid rgba(242,98,46,0.4);
+  padding: 0.35rem 0.8rem;
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.6s ease both;
+}
+.hero-tag::before { content: '▲'; font-size: 0.5rem; }
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(4rem, 8vw, 7rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+h1 .accent { color: var(--gold); }
+h1 .accent2 { color: var(--orange); }
+.hero-sub {
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(245,240,232,0.7);
+  max-width: 420px;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+.hero-actions {
+  margin-top: 2.5rem;
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+.btn-primary {
+  background: var(--gold) !important;
+  color: var(--black) !important;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.85rem 2rem;
+  border: none; border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s, transform 0.15s;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+.btn-primary:hover { background: var(--orange) !important; color: var(--white) !important; transform: translateY(-2px); }
+.btn-outline {
+  background: transparent !important;
+  color: var(--white) !important;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.85rem 2rem;
+  border: 1px solid rgba(245,240,232,0.3) !important;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s, transform 0.15s;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+.btn-outline:hover { border-color: var(--gold) !important; color: var(--gold) !important; transform: translateY(-2px); }
+
+.hero-stats {
+  margin-top: 3rem;
+  display: flex; gap: 2.5rem;
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  color: var(--gold);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 0.2rem;
+}
+
+/* hero right — live jobs preview */
+.hero-right {
+  position: relative; z-index: 2;
+  padding-left: 3rem;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+.jobs-preview {
+  background: var(--slate);
+  border: 1px solid rgba(232,200,74,0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.jobs-preview-header {
+  background: var(--mid);
+  padding: 1rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(232,200,74,0.1);
+}
+.jobs-preview-header span {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.live-dot {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  color: #4ade80;
+}
+.live-dot::before {
+  content: '';
+  width: 7px; height: 7px;
+  background: #4ade80;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+.job-card {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.job-card:hover { background: rgba(232,200,74,0.04); }
+.job-card:last-child { border-bottom: none; }
+.job-icon {
+  width: 40px; height: 40px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.job-info { flex: 1; min-width: 0; }
+.job-title {
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: var(--white);
+}
+.job-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+  font-family: 'Space Mono', monospace;
+}
+.job-pay {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  color: var(--gold);
+  white-space: nowrap;
+}
+.job-badge {
+  font-size: 0.62rem;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 2px;
+  margin-top: 0.3rem;
+  display: inline-block;
+}
+.badge-new { background: rgba(74,222,128,0.15); color: #4ade80; }
+.badge-hot { background: rgba(242,98,46,0.15); color: var(--orange); }
+.badge-fill { background: rgba(232,200,74,0.12); color: var(--gold); }
+
+/* ── HOW IT WORKS ── */
+.section { padding: 6rem 2.5rem; }
+.section-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--orange);
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+.section-title .g { color: var(--gold); }
+
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5px;
+  margin-top: 4rem;
+  border: 1px solid rgba(232,200,74,0.15);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.how-card {
+  background: var(--slate);
+  padding: 2.5rem 2rem;
+  position: relative;
+  transition: background 0.25s;
+}
+.how-card:hover { background: var(--mid); }
+.how-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 5rem;
+  line-height: 1;
+  color: rgba(232,200,74,0.12);
+  position: absolute;
+  top: 1rem; right: 1.5rem;
+}
+.how-icon { font-size: 2rem; margin-bottom: 1.2rem; }
+.how-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.7rem;
+  color: var(--white);
+}
+.how-desc { font-size: 0.88rem; color: rgba(245,240,232,0.6); line-height: 1.7; }
+
+/* ── ROLES SPLIT ── */
+.roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5px;
+  margin: 0 2.5rem;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.role-card {
+  padding: 4rem 3rem;
+  position: relative;
+  overflow: hidden;
+}
+.role-card.worker { background: var(--slate); }
+.role-card.business { background: var(--mid); }
+.role-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+.role-card.worker .role-eyebrow { color: var(--gold); }
+.role-card.business .role-eyebrow { color: var(--orange); }
+.role-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  line-height: 1;
+  margin-bottom: 1.5rem;
+}
+.role-features { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2.5rem; }
+.role-features li {
+  display: flex; align-items: flex-start; gap: 0.8rem;
+  font-size: 0.9rem;
+  color: rgba(245,240,232,0.75);
+  line-height: 1.5;
+}
+.role-features li::before {
+  content: '→';
+  color: var(--gold);
+  font-family: 'Space Mono', monospace;
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+}
+.role-card.business .role-features li::before { color: var(--orange); }
+.role-bg-text {
+  position: absolute;
+  bottom: -1rem; right: -0.5rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 9rem;
+  line-height: 1;
+  opacity: 0.04;
+  pointer-events: none;
+  color: var(--white);
+}
+
+/* ── JOB BOARD ── */
+.job-board-section { padding: 6rem 2.5rem; }
+.filters {
+  display: flex; gap: 0.75rem; flex-wrap: wrap;
+  margin: 2rem 0;
+}
+.filter-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(245,240,232,0.2) !important;
+  background: transparent !important;
+  color: var(--muted) !important;
+  border-radius: var(--radius) !important;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-btn:hover, .filter-btn.active {
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  background: rgba(232,200,74,0.06) !important;
+}
+.job-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px;
+  border: 1px solid rgba(232,200,74,0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.jb-card {
+  background: var(--slate);
+  padding: 1.8rem;
+  transition: background 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+.jb-card:hover { background: var(--mid); }
+.jb-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; }
+.jb-company-icon {
+  width: 46px; height: 46px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+}
+.jb-title {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+  line-height: 1.3;
+  color: var(--white);
+}
+.jb-company { font-size: 0.8rem; color: var(--muted); font-family: 'Space Mono', monospace; }
+.jb-details {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  margin: 1rem 0;
+}
+.jb-tag {
+  font-size: 0.68rem;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.05);
+  color: var(--muted);
+}
+.jb-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.jb-pay {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: var(--gold);
+}
+.jb-pay span { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: var(--muted); font-weight: 300; }
+.apply-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 1rem;
+  background: var(--gold) !important;
+  color: var(--black) !important;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.2s;
+}
+.apply-btn:hover { background: var(--orange) !important; color: var(--white) !important; }
+.jb-urgent {
+  position: absolute; top: 1rem; right: 1rem;
+  font-size: 0.6rem;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--orange);
+  border: 1px solid rgba(242,98,46,0.4);
+  padding: 0.2rem 0.45rem;
+  border-radius: 2px;
+}
+
+/* ── MARQUEE ── */
+.marquee-wrap {
+  overflow: hidden;
+  border-top: 1px solid rgba(232,200,74,0.1);
+  border-bottom: 1px solid rgba(232,200,74,0.1);
+  padding: 1rem 0;
+  margin: 4rem 0;
+  background: var(--slate);
+}
+.marquee-inner {
+  display: flex;
+  gap: 3rem;
+  animation: marquee 20s linear infinite;
+  white-space: nowrap;
+  width: max-content;
+}
+.marquee-item {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  color: rgba(232,200,74,0.4);
+  display: flex; align-items: center; gap: 1rem;
+}
+.marquee-item .dot { color: var(--orange); font-size: 0.5rem; }
+
+/* ── CTA BAND ── */
+.cta-band {
+  margin: 0 2.5rem 6rem;
+  background: var(--gold);
+  border-radius: 8px;
+  padding: 4rem 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 2rem;
+  overflow: hidden;
+  position: relative;
+}
+.cta-band::before {
+  content: 'FREEMASON';
+  position: absolute;
+  right: -1rem; top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 10rem;
+  line-height: 1;
+  color: rgba(10,10,10,0.08);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.cta-band-text h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--black);
+  letter-spacing: 0.02em;
+}
+.cta-band-text p {
+  margin-top: 0.5rem;
+  color: rgba(10,10,10,0.6);
+  font-size: 0.95rem;
+}
+.btn-dark {
+  background: var(--black) !important;
+  color: var(--gold) !important;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.9rem 2rem;
+  border: none; border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-dark:hover { background: var(--orange) !important; color: var(--white) !important; }
+
+/* ── FOOTER ── */
+footer {
+  padding: 3rem 2.5rem;
+  border-top: 1px solid rgba(232,200,74,0.1);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem;
+}
+footer .logo { font-size: 1.4rem; }
+.footer-links { display: flex; gap: 2rem; }
+.footer-links a {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--gold); }
+.footer-copy {
+  font-size: 0.75rem;
+  color: rgba(136,136,136,0.5);
+  font-family: 'Space Mono', monospace;
+}
+
+/* Custom dashboard scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--black);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--mid);
+  border-radius: var(--radius);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Tab & general layout helpers */
+.mason-card {
+  background: var(--slate);
+  border: 1px solid rgba(232, 200, 74, 0.15);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.mason-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding-top: 7rem; }
+  .hero-right { padding-left: 0; margin-top: 3rem; }
+  .how-grid { grid-template-columns: 1fr; }
+  .roles { grid-template-columns: 1fr; margin: 0 1.2rem; }
+  nav ul { display: none; }
+  .cta-band { flex-direction: column; align-items: flex-start; margin: 0 1.2rem 4rem; }
+  .hero { padding: 7rem 1.5rem 3rem; }
+  .section { padding: 4rem 1.5rem; }
+  .job-board-section { padding: 4rem 1.5rem; }
 }

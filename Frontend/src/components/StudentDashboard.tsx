@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData, getLocalDateString } from '../context/DataContext';
 import { SlotSelectionGrid } from './SlotSelectionGrid';
+import TodayBookings from './TodayBookings';
 
 type Slot = { status: 'open' | 'closed'; bookedBy: string | null };
 
@@ -15,6 +16,7 @@ const StudentDashboard: React.FC = () => {
   const [selectedSlots, setSelectedSlots] = useState<Map<string, Set<string>>>(new Map());
   const [viewDate, setViewDate] = useState<string>(() => getLocalDateString(new Date()));
   const [isBooking, setIsBooking] = useState(false);
+  const [activeTab, setActiveTab] = useState<'book' | 'today'>('book');
 
   // Fetch restaurant data on component mount
   useEffect(() => {
@@ -41,9 +43,9 @@ const StudentDashboard: React.FC = () => {
   if (loading || !data) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          <p className="text-slate-500 font-medium tracking-wide">Loading Dashboard...</p>
+        <div className="fm-loader">
+          <div className="logo">Free<span>Mason</span></div>
+          <div className="fm-loader-sub">Loading Dashboard…</div>
         </div>
       </div>
     );
@@ -140,126 +142,181 @@ const StudentDashboard: React.FC = () => {
   return (
     <div className="space-y-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
       {/* Header Section */}
-      <div className="bg-slate-900 text-white rounded-2xl sm:rounded-3xl p-6 sm:p-12 shadow-sm relative overflow-hidden">
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+      <div className="bg-[var(--slate)] border border-[rgba(232,200,74,0.2)] rounded-lg p-6 sm:p-10 shadow-lg relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid opacity-10 pointer-events-none" style={{
+          backgroundImage: 'linear-gradient(rgba(232,200,74,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(232,200,74,0.04) 1px, transparent 1px)',
+          backgroundSize: '30px 30px'
+        }}></div>
+        
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-4xl font-bold tracking-tight mb-2 sm:mb-3">Student Dashboard</h1>
-            <p className="text-slate-400 text-sm sm:text-lg text-balance">Book your preferred time slots at available restaurants.</p>
+            <div className="logo text-3xl mb-1">
+              Free<span>Mason</span>
+            </div>
+            <p className="text-[var(--muted)] font-mono text-xs uppercase tracking-wider">
+              Student / Worker Dashboard
+            </p>
           </div>
           <button
             onClick={handleLogout}
-            className="self-start px-4 py-2 sm:px-5 sm:py-2.5 bg-slate-800 hover:bg-rose-600 text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl transition-colors border border-slate-700 hover:border-rose-500 shadow-sm"
+            className="self-start btn-outline py-2 px-5 font-semibold text-xs tracking-wider"
           >
             Logout
           </button>
         </div>
+        
+        <div className="mt-8 flex gap-2 relative z-10">
+          <button 
+            onClick={() => setActiveTab('book')}
+            className={`px-5 py-2.5 rounded font-mono text-xs uppercase tracking-wider transition-all ${
+              activeTab === 'book' 
+                ? 'bg-[var(--gold)] text-[var(--black)] font-bold shadow-md' 
+                : 'bg-[var(--black)] text-[var(--muted)] hover:text-[var(--white)] border border-[rgba(232,200,74,0.1)]'
+            }`}
+          >
+            ⚡ Book Slots
+          </button>
+          <button 
+            onClick={() => setActiveTab('today')}
+            className={`px-5 py-2.5 rounded font-mono text-xs uppercase tracking-wider transition-all ${
+              activeTab === 'today' 
+                ? 'bg-[var(--gold)] text-[var(--black)] font-bold shadow-md' 
+                : 'bg-[var(--black)] text-[var(--muted)] hover:text-[var(--white)] border border-[rgba(232,200,74,0.1)]'
+            }`}
+          >
+            📅 Today's Bookings
+          </button>
+        </div>
       </div>
 
-      {/* Booking Form Section */}
-      <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
-        <h2 className="text-base sm:text-xl font-bold mb-3 sm:mb-6 text-slate-800 tracking-tight">Booking Details</h2>
+      {activeTab === 'book' && (
+        <div className="space-y-8">
+          {/* Booking Form Section */}
+          <div className="bg-[var(--slate)] border border-[rgba(232,200,74,0.15)] rounded-lg p-6 sm:p-8 shadow-sm">
+            <h2 className="font-['Bebas Neue'] text-2xl uppercase tracking-wider text-[var(--gold)] mb-6">
+              Booking Details
+            </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 mb-4 sm:mb-6">
-          <div>
-            <label className="block text-[10px] sm:text-sm font-medium text-slate-600 mb-1 sm:mb-2">Select Restaurant</label>
-            <select
-              className="border border-slate-200 bg-slate-50 rounded-lg sm:rounded-xl p-2 sm:p-3 text-xs sm:text-base w-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none appearance-none"
-              value={companyId || ''}
-              onChange={(e) => {
-                const selectedId = e.target.value;
-                setCompanyId(selectedId);
-                const selectedCompany = data.find(c => String(c.id) === selectedId);
-                if (selectedCompany) {
-                  const firstRole = Object.keys(selectedCompany.roles)[0];
-                  setRole(firstRole);
-                }
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-2">
+              <div>
+                <label className="block text-[var(--white)] opacity-80 font-mono text-[10px] uppercase tracking-wider mb-2">
+                  Select Restaurant
+                </label>
+                <select
+                  className="w-full px-4 py-3 bg-[var(--black)] border border-[rgba(232,200,74,0.15)] rounded text-[var(--white)] focus:outline-none focus:border-[var(--gold)] transition-all font-sans text-sm appearance-none cursor-pointer"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e8c84a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 1rem center',
+                    backgroundSize: '1em'
+                  }}
+                  value={companyId || ''}
+                  onChange={(e) => {
+                    const selectedId = e.target.value;
+                    setCompanyId(selectedId);
+                    const selectedCompany = data.find(c => String(c.id) === selectedId);
+                    if (selectedCompany) {
+                      const firstRole = Object.keys(selectedCompany.roles)[0];
+                      setRole(firstRole);
+                    }
+                  }}
+                >
+                  {data.map(company => (
+                    <option key={company.id} value={company.id} className="bg-[var(--slate)]">
+                      {company.name || company.id} ({company.startHour}:00 - {company.endHour}:00)
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[var(--white)] opacity-80 font-mono text-[10px] uppercase tracking-wider mb-2">
+                  Select Position
+                </label>
+                <select
+                  className="w-full px-4 py-3 bg-[var(--black)] border border-[rgba(232,200,74,0.15)] rounded text-[var(--white)] focus:outline-none focus:border-[var(--gold)] transition-all font-sans text-sm appearance-none cursor-pointer"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e8c84a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 1rem center',
+                    backgroundSize: '1em'
+                  }}
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                >
+                  {availableRoles.map(r => (
+                    <option key={r} value={r} className="bg-[var(--slate)]">
+                      {r} - ${currentCompany.roles[r]?.salary || 'N/A'}/hour
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Slot Selection Section */}
+          <div className="bg-[var(--slate)] border border-[rgba(232,200,74,0.15)] rounded-lg p-6 sm:p-8 shadow-sm">
+            <SlotSelectionGrid
+              slotsByDate={roleSlots}
+              onSlotClick={handleSlotClick}
+              title={`${currentCompany.name} - ${role}`}
+              readOnly={isBooking}
+              showSummary={false}
+              showTopSummary={false}
+              startHour={currentCompany.startHour}
+              endHour={currentCompany.endHour}
+              selectedDate={viewDate}
+              onDateChange={(d) => {
+                setViewDate(d);
               }}
-            >
-              {data.map(company => (
-                <option key={company.id} value={company.id}>
-                  {company.name || company.id} ({company.startHour}:00 - {company.endHour}:00)
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[10px] sm:text-sm font-medium text-slate-600 mb-1 sm:mb-2">Select Position</label>
-            <select
-              className="border border-slate-200 bg-slate-50 rounded-lg sm:rounded-xl p-2 sm:p-3 text-xs sm:text-base w-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none appearance-none"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            >
-              {availableRoles.map(r => (
-                <option key={r} value={r}>
-                  {r} - ${currentCompany.roles[r]?.salary || 'N/A'}/hour
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Slot Selection Section */}
-      <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
-        <SlotSelectionGrid
-          slotsByDate={roleSlots}
-          onSlotClick={handleSlotClick}
-          title={`${currentCompany.name} - ${role}`}
-          readOnly={isBooking}
-          showSummary={false}
-          showTopSummary={false}
-          startHour={currentCompany.startHour}
-          endHour={currentCompany.endHour}
-          selectedDate={viewDate}
-          onDateChange={(d) => {
-            setViewDate(d);
-            // clear selection when date changes to avoid confusion
-          }}
-          selectedTimeSlots={selectedSlots.get(viewDate)}
-        />
-        {status && (
-          <div className={`mb-2 p-2 sm:p-4 rounded-lg sm:rounded-xl border text-[10px] sm:text-base ${status.includes('success') || status.includes('Successfully')
-            ? 'bg-green-50 border-green-200 text-green-800'
-            : status.includes('selected')
-              ? 'bg-indigo-50 border-indigo-200 text-indigo-800'
-              : 'bg-red-50 border-red-200 text-red-800'
-            }`}>
-            {status}
-          </div>
-        )}
-      </div>
-
-      {/* Actions Section */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
-        <div className="flex flex-col sm:flex-row gap-6 items-center justify-between">
-          <div className="text-sm text-slate-500">
-            {selectedSlots.size > 0 && (
-              <span className="font-semibold text-slate-700 bg-slate-100 px-4 py-2 rounded-full">
-                {[...selectedSlots.values()].reduce((acc, s) => acc + s.size, 0)} slot(s) selected across {selectedSlots.size} date(s)
-              </span>
-            )}
-            {selectedSlots.size === 0 && (
-              <span>No slots selected.</span>
+              selectedTimeSlots={selectedSlots.get(viewDate)}
+            />
+            {status && (
+              <div className={`mt-4 p-4 rounded border text-xs font-mono uppercase tracking-wider ${
+                status.includes('success') || status.includes('Successfully')
+                  ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-200'
+                  : status.includes('selected')
+                    ? 'bg-amber-950/30 border-amber-500/30 text-amber-200'
+                    : 'bg-rose-950/40 border-rose-500/40 text-rose-200'
+              }`}>
+                {status}
+              </div>
             )}
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-            <button
-              className="flex-1 sm:flex-none bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3 px-6 rounded-xl transition-all shadow-sm"
-              onClick={() => setSelectedSlots(new Map())}
-            >
-              Clear
-            </button>
-            <button
-              className="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-xl transition-all shadow-sm disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed"
-              onClick={handleBookSelected}
-              disabled={selectedSlots.size === 0 || isBooking}
-            >
-              {isBooking ? 'Booking...' : 'Book Slots'}
-            </button>
+
+          {/* Actions Section */}
+          <div className="bg-[var(--slate)] border border-[rgba(232,200,74,0.15)] rounded-lg p-6 sm:p-8 shadow-sm">
+            <div className="flex flex-col sm:flex-row gap-6 items-center justify-between">
+              <div className="text-xs font-mono uppercase tracking-wider text-[var(--muted)]">
+                {selectedSlots.size > 0 ? (
+                  <span className="text-[var(--gold)] font-bold bg-[var(--black)] border border-[rgba(232,200,74,0.15)] px-4 py-2.5 rounded">
+                    {[...selectedSlots.values()].reduce((acc, s) => acc + s.size, 0)} slot(s) selected across {selectedSlots.size} date(s)
+                  </span>
+                ) : (
+                  <span>No slots selected yet. Click slots above.</span>
+                )}
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <button
+                  className="flex-1 sm:flex-none btn-outline font-bold py-3 px-6 rounded text-xs uppercase tracking-wider"
+                  onClick={() => setSelectedSlots(new Map())}
+                >
+                  Clear Selection
+                </button>
+                <button
+                  className="flex-1 sm:flex-none btn-primary py-3 px-8 rounded text-xs uppercase tracking-wider font-bold"
+                  onClick={handleBookSelected}
+                  disabled={selectedSlots.size === 0 || isBooking}
+                >
+                  {isBooking ? 'Booking...' : 'Book Selected Slots'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {activeTab === 'today' && <TodayBookings />}
     </div>
   );
 };

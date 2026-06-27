@@ -70,38 +70,56 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 sm:p-10 max-w-md w-full">
-        <h1 className="text-3xl font-bold tracking-tight text-center mb-2 text-slate-900">Job Booking App</h1>
-        <h2 className="text-lg font-medium text-center mb-8 text-slate-500">Welcome back. Please login.</h2>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--black)] relative overflow-hidden">
+      {/* Grid background effect */}
+      <div className="absolute inset-0 bg-image-grid opacity-30 pointer-events-none">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'linear-gradient(rgba(232,200,74,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(232,200,74,0.04) 1px, transparent 1px)',
+          backgroundSize: '40px 40px'
+        }}></div>
+      </div>
+      
+      <div className="bg-[var(--slate)] rounded-lg border border-[rgba(232,200,74,0.2)] p-8 sm:p-10 max-w-md w-full relative z-10 shadow-xl">
+        <div className="text-center mb-6">
+          <Link to="/" className="logo text-4xl inline-block hover:scale-[1.02] transition-transform">
+            Free<span>Mason</span>
+          </Link>
+          <h2 className="text-xs font-mono uppercase tracking-widest text-[var(--muted)] mt-2">
+            Build your hustle. Shift by shift.
+          </h2>
+        </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            {error}
+          <div className="bg-rose-950/40 border border-rose-500/40 text-rose-200 px-4 py-3 rounded text-xs font-mono uppercase tracking-wider mb-6">
+            ⚠️ {error}
           </div>
         )}
 
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="block text-slate-600 font-medium mb-2 text-sm">Email Address</label>
+            <label className="block text-[var(--white)] opacity-80 font-mono text-[10px] uppercase tracking-wider mb-2">
+              Email Address
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="user@example.com"
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-slate-50"
+              className="w-full px-4 py-3 bg-[var(--black)] border border-[rgba(232,200,74,0.15)] rounded text-[var(--white)] focus:outline-none focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] transition-all font-sans text-sm"
               required
             />
           </div>
 
           <div>
-            <label className="block text-slate-600 font-medium mb-2 text-sm">Password</label>
+            <label className="block text-[var(--white)] opacity-80 font-mono text-[10px] uppercase tracking-wider mb-2">
+              Password
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Your password"
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-slate-50"
+              placeholder="••••••••"
+              className="w-full px-4 py-3 bg-[var(--black)] border border-[rgba(232,200,74,0.15)] rounded text-[var(--white)] focus:outline-none focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] transition-all font-sans text-sm"
               required
             />
           </div>
@@ -109,23 +127,23 @@ const Login: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-slate-900 text-white py-3 rounded-xl font-semibold hover:bg-slate-800 transition disabled:bg-slate-300 disabled:cursor-not-allowed shadow-sm mt-2"
+            className="w-full btn-primary py-3 rounded font-bold uppercase tracking-wider font-mono text-xs shadow-md mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Logging in...' : 'Login into your account'}
           </button>
         </form>
 
-        <div className="mt-8 text-center border-t border-slate-100 pt-6">
-          <p className="text-slate-600 text-sm">
+        <div className="mt-8 text-center border-t border-[rgba(255,255,255,0.06)] pt-6">
+          <p className="text-[var(--muted)] font-mono text-xs uppercase tracking-wider">
             Don't have an account?{' '}
-            <Link to="/register" className="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors">
+            <Link to="/register" className="text-[var(--gold)] hover:text-[var(--orange)] font-bold transition-colors">
               Register here
             </Link>
           </p>
         </div>
 
-        <p className="text-center text-gray-500 text-sm mt-6">
-          Demo credentials: user@example.com / userpassword
+        <p className="text-center font-mono text-[10px] uppercase tracking-widest text-[var(--muted)] opacity-60 mt-6">
+          Demo: user@example.com / userpassword
         </p>
       </div>
     </div>

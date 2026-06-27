@@ -194,25 +194,25 @@ export const SlotSelectionGrid: React.FC<SlotSelectionGridProps> = ({
   const getSlotColor = (slot: Slot, isPast: boolean, timeSlot: string): string => {
     // Past slot
     if (isPast) {
-      return 'bg-slate-100 hover:bg-slate-100 cursor-not-allowed border-slate-200 text-slate-400';
+      return 'bg-[var(--black)] border-dashed border-[rgba(255,255,255,0.05)] text-zinc-700 cursor-not-allowed';
     }
 
     if (slot.bookedBy !== null) {
       // Booked slot
-      return 'bg-rose-50 hover:bg-rose-100 cursor-pointer border-rose-200 text-rose-700';
+      return 'bg-[var(--orange)] border-[var(--orange)] text-[var(--white)] cursor-pointer shadow-md';
     }
 
     // Selected by student
     if (selectedTimeSlots?.has(timeSlot)) {
-      return 'bg-slate-900 hover:bg-slate-800 cursor-pointer border-slate-900 text-white shadow-md ring-2 ring-slate-400 ring-offset-1';
+      return 'bg-[var(--gold)] border-[var(--gold)] text-[var(--black)] cursor-pointer font-bold shadow-md';
     }
 
     if (slot.status === 'closed') {
       // Manually closed slot
-      return 'bg-slate-100 hover:bg-slate-200 cursor-pointer border-slate-200 text-slate-500';
+      return 'bg-[var(--slate)] border-[rgba(255,255,255,0.08)] text-[var(--muted)] cursor-pointer';
     }
     // Open slot
-    return 'bg-teal-50 hover:bg-teal-100 cursor-pointer border-teal-200 text-teal-800';
+    return 'bg-[var(--black)] border border-[var(--gold)] text-[var(--gold)] hover:bg-[rgba(232,200,74,0.04)] cursor-pointer';
   };
 
   const getSlotLabel = (slot: Slot): string => {
@@ -275,26 +275,26 @@ export const SlotSelectionGrid: React.FC<SlotSelectionGridProps> = ({
 
   return (
     <div className="flex flex-col">
-      <h3 className="text-base sm:text-xl font-bold mb-4 sm:mb-6 text-slate-800 tracking-tight">{title}</h3>
+      <h3 className="font-['Bebas Neue'] text-2xl uppercase tracking-wider text-[var(--gold)] mb-4">{title}</h3>
 
       {/* Booked Slots Summary */}
       {showTopSummary && bookedSlotsSummary.bookedSlots.length > 0 && (
-        <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <p className="text-sm font-medium text-blue-900 mb-2">Booked Slots Summary</p>
-          <div className="text-xs text-blue-800 space-y-1">
+        <div className="mb-6 p-4 bg-[var(--black)] border border-[rgba(232,200,74,0.15)] rounded">
+          <p className="text-xs font-mono uppercase tracking-wider text-[var(--gold)] mb-2 font-bold">Booked Shifts Summary</p>
+          <div className="text-xs font-mono text-[var(--white)] opacity-85 space-y-1">
             {Object.entries(bookedSlotsSummary.bookedByStudent).map(([studentName, count]) => (
               <div key={studentName}>
-                <span className="font-semibold">{studentName}:</span> {count} slot{count !== 1 ? 's' : ''} booked
+                <span className="text-[var(--gold)]">{studentName}:</span> {count} shift{count !== 1 ? 's' : ''} booked
               </div>
             ))}
           </div>
-          <p className="text-xs text-blue-700 mt-2 font-medium">Total Booked: {bookedSlotsSummary.bookedSlots.length} slot(s)</p>
+          <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--muted)] mt-2">Total Booked: {bookedSlotsSummary.bookedSlots.length} shift(s)</p>
         </div>
       )}
 
       {/* Date Selector */}
-      <div className="mb-8">
-        <p className="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider">Date</p>
+      <div className="mb-6">
+        <p className="text-[10px] font-mono uppercase tracking-wider text-[var(--muted)] mb-3">Select Date</p>
         <div className="flex overflow-x-auto hide-scrollbar gap-2 pb-2">
           {sortedDates.map((date) => (
             <button
@@ -306,9 +306,9 @@ export const SlotSelectionGrid: React.FC<SlotSelectionGridProps> = ({
                   setInternalSelectedDate(date);
                 }
               }}
-              className={`flex-shrink-0 py-2.5 px-5 rounded-full text-sm font-semibold transition-all border ${selectedDate === date
-                ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
-                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300'
+              className={`flex-shrink-0 py-2 px-5 rounded text-xs font-mono uppercase tracking-wider transition-all border ${selectedDate === date
+                ? 'bg-[var(--gold)] text-[var(--black)] border-[var(--gold)] font-bold shadow-md'
+                : 'bg-[var(--black)] text-[var(--muted)] border-[rgba(232,200,74,0.1)] hover:text-[var(--white)] hover:bg-[var(--mid)]'
                 }`}
             >
               <div className="whitespace-nowrap">{formatDate(date)}</div>
@@ -318,31 +318,31 @@ export const SlotSelectionGrid: React.FC<SlotSelectionGridProps> = ({
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap items-center gap-3 sm:gap-6 mb-6 sm:mb-8 text-[10px] sm:text-sm bg-slate-50 p-2 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-100">
-        <div className="flex items-center gap-1.5 sm:gap-2 font-medium text-slate-600">
-          <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-teal-50 border border-teal-200"></div>
+      <div className="flex flex-wrap items-center gap-3 sm:gap-6 mb-6 sm:mb-8 text-[10px] bg-[var(--black)] p-4 border border-[rgba(232,200,74,0.15)] rounded font-mono uppercase tracking-wider">
+        <div className="flex items-center gap-2 text-[var(--white)] opacity-85">
+          <div className="w-3 h-3 rounded-sm bg-[var(--black)] border border-[var(--gold)]"></div>
           Available
         </div>
         {selectedTimeSlots !== undefined && (
-          <div className="flex items-center gap-1.5 sm:gap-2 font-medium text-slate-600">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-slate-900 border border-slate-900"></div>
+          <div className="flex items-center gap-2 text-[var(--white)] opacity-85">
+            <div className="w-3 h-3 rounded-sm bg-[var(--gold)]"></div>
             Selected
           </div>
         )}
-        <div className="flex items-center gap-1.5 sm:gap-2 font-medium text-slate-600">
-          <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-rose-50 border border-rose-200"></div>
+        <div className="flex items-center gap-2 text-[var(--white)] opacity-85">
+          <div className="w-3 h-3 rounded-sm bg-[var(--orange)]"></div>
           Booked
         </div>
-        <div className="flex items-center gap-1.5 sm:gap-2 font-medium text-slate-600">
-          <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-slate-100 border border-slate-200"></div>
+        <div className="flex items-center gap-2 text-[var(--white)] opacity-85">
+          <div className="w-3 h-3 rounded-sm bg-[var(--slate)] border border-[rgba(255,255,255,0.08)]"></div>
           Closed
         </div>
       </div>
 
       {/* Slots Grid */}
       <div>
-        <p className="text-xs sm:text-sm font-semibold text-slate-500 mb-2 sm:mb-4 uppercase tracking-wider">
-          {selectedDate && `Slots for ${formatDate(selectedDate)}`}
+        <p className="text-[10px] font-mono uppercase tracking-wider text-[var(--muted)] mb-3">
+          {selectedDate && `Shifts for ${formatDate(selectedDate)}`}
         </p>
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-3">
           {sortedTimes.map((timeSlot) => {
@@ -351,7 +351,7 @@ export const SlotSelectionGrid: React.FC<SlotSelectionGridProps> = ({
             const isPast = isPastSlot(selectedDate || '', timeSlot);
             const isSelected = selectedTimeSlots?.has(timeSlot) ?? false;
             const colorClass = getSlotColor(slot, isPast, timeSlot);
-            const label = isSelected ? '✓ Selected' : getSlotLabel(slot);
+            const label = isSelected ? '✓ Selected' : isPast ? 'Past' : getSlotLabel(slot);
 
             return (
               <button
@@ -363,16 +363,16 @@ export const SlotSelectionGrid: React.FC<SlotSelectionGridProps> = ({
                 }}
                 disabled={readOnly || isPast}
                 className={`
-                  relative h-14 sm:h-20 rounded-xl border-2 font-semibold
+                  relative h-14 sm:h-20 rounded border font-mono
                   transition-all duration-200 flex flex-col items-center justify-center
                   text-sm leading-tight group overflow-hidden px-1
                   ${colorClass}
-                  ${readOnly || isPast ? 'opacity-70 cursor-not-allowed' : 'hover:scale-[1.02]'}
+                  ${readOnly || isPast ? 'opacity-55 cursor-not-allowed' : 'hover:scale-[1.02]'}
                 `}
                 title={`${timeSlot} - ${label}`}
               >
-                <div className="font-bold text-xs sm:text-base">{timeSlot.split('-')[0]}</div>
-                <div className="text-[10px] sm:text-xs font-medium mt-0.5 opacity-90 truncate w-full px-1">{label}</div>
+                <div className="font-bold text-xs sm:text-sm">{timeSlot.split('-')[0]}</div>
+                <div className="text-[9px] font-semibold mt-0.5 opacity-90 truncate w-full px-1 text-center uppercase tracking-wider">{label}</div>
               </button>
             );
           })}
@@ -381,22 +381,22 @@ export const SlotSelectionGrid: React.FC<SlotSelectionGridProps> = ({
 
       {sortedTimes.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-gray-500">No slots available for selected date</p>
+          <p className="text-xs font-mono uppercase tracking-wider text-[var(--muted)]">No shifts available for selected date</p>
         </div>
       )}
 
       {/* Detailed Booked Slots List */}
       {showSummary && bookedSlotsSummary.bookedSlots.filter(s => s.date === getLocalDateString(new Date())).length > 0 && (
-        <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-rose-50 rounded-xl sm:rounded-2xl border border-rose-100">
-          <p className="text-xs sm:text-sm font-bold text-rose-900 mb-3 sm:mb-4 tracking-tight">Detailed Booked Slots (Today)</p>
+        <div className="mt-6 sm:mt-8 p-4 bg-[var(--black)] border border-[rgba(232,200,74,0.15)] rounded">
+          <p className="text-xs font-mono uppercase tracking-wider text-[var(--gold)] mb-3 font-bold">Detailed Booked Shifts (Today)</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 text-xs">
             {bookedSlotsSummary.bookedSlots
               .filter(slot => slot.date === getLocalDateString(new Date()))
               .sort((a, b) => a.date.localeCompare(b.date) || a.timeSlot.localeCompare(b.timeSlot))
               .map((slot, idx) => (
-                <div key={idx} className="p-2.5 sm:p-3 bg-white rounded-lg sm:rounded-xl border border-rose-100 shadow-sm flex flex-col justify-center">
-                  <span className="font-bold text-rose-800 text-xs sm:text-sm mb-0.5 sm:mb-1">{slot.bookedBy}</span>
-                  <span className="text-[10px] sm:text-xs text-slate-500 font-medium">{formatDate(slot.date)} at {formatTimeSlot(slot.timeSlot)}</span>
+                <div key={idx} className="p-3 bg-[var(--slate)] rounded border border-[rgba(255,255,255,0.06)] flex flex-col justify-center">
+                  <span className="font-bold text-[var(--white)] text-sm mb-1">{slot.bookedBy}</span>
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--muted)]">{formatDate(slot.date)} at {formatTimeSlot(slot.timeSlot)}</span>
                 </div>
               ))}
           </div>
@@ -405,3 +405,4 @@ export const SlotSelectionGrid: React.FC<SlotSelectionGridProps> = ({
     </div>
   );
 };
+
